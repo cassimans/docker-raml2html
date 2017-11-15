@@ -1,0 +1,38 @@
+stages:
+  - build
+  - push
+
+before_script:
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+
+build docker-raml2html latest:
+  stage: build
+  tags:
+    - dockerbuilds
+  script:
+    - docker build --pull --no-cache -t $CI_REGISTRY_IMAGE:latest ./3.0.0
+
+build docker-raml2html 3.0.0:
+  stage: build
+  tags:
+    - dockerbuilds
+  script:
+    - docker build --pull --no-cache -t $CI_REGISTRY_IMAGE:3.0.0 ./3.0.0
+
+push docker-raml2html latest:
+  stage: push
+  tags:
+    - dockerbuilds
+  script:
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - master@francois.cassimans/docker-raml2html
+
+push docker-raml2html 3.0.0:
+  stage: push
+  tags:
+    - dockerbuilds
+  script:
+    - docker push $CI_REGISTRY_IMAGE:3.0.0
+  only:
+    - master@francois.cassimans/docker-raml2html
